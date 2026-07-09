@@ -754,6 +754,11 @@ img{max-width:100%;display:block}
         <div class="offer-feat"><i class="ti ti-check"></i>This rate, locked in, for as long as you stay subscribed</div>
       </div>
 
+      <div style="margin-top:24px; margin-bottom: 24px;">
+        <label for="checkoutEmail" style="display:block; text-align:left; margin-bottom:8px; font-size:14px; color:var(--text-dim); font-weight:500;">Enter your email to continue</label>
+        <input type="email" id="checkoutEmail" placeholder="your@email.com" style="width:100%; padding:14px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:#fff; font-size:16px; outline:none; transition:border-color 0.2s; font-family:inherit;" onfocus="this.style.borderColor='var(--accent-glow)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+      </div>
+
       <a class="btn btn-warn btn-lg magnetic" href="#" data-cta="annual"><i class="ti ti-bolt"></i> Claim founding rate — $90/year</a>
 
       <div class="offer-monthly">
@@ -875,6 +880,20 @@ function fnToast(msg){
    bouncing through the app first (the app isn't shown again until AFTER
    payment succeeds, on the premium-signup page). */
 function startFunnelCheckout(plan, btnEl){
+  var emailEl = document.getElementById('checkoutEmail');
+  var email = emailEl ? emailEl.value.trim() : '';
+
+  if (!email || !email.includes('@')) {
+    if (emailEl) {
+      emailEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      emailEl.focus();
+      emailEl.style.borderColor = 'var(--text-warn)';
+      setTimeout(function(){ emailEl.style.borderColor = 'rgba(255,255,255,0.1)'; }, 2000);
+    }
+    fnToast("Please enter a valid email address to start checkout.");
+    return;
+  }
+
   var originalHTML = btnEl ? btnEl.innerHTML : null;
   if (btnEl) {
     btnEl.style.pointerEvents = 'none';
@@ -885,7 +904,7 @@ function startFunnelCheckout(plan, btnEl){
   fetch(WORKER_API_URL + '/payment/create-checkout-public', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ plan: plan, cancel_url: window.location.href })
+    body: JSON.stringify({ plan: plan, email: email, cancel_url: window.location.href })
   })
   .then(function(res){ return res.json().catch(function(){ return {}; }); })
   .then(function(data){
