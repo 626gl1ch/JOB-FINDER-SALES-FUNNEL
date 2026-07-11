@@ -1,6 +1,7 @@
 {
   "cleanUrls": true,
   "rewrites": [
+    { "source": "/playbook", "destination": "/SnipeJob_Marketing_Playbook.html" },
     { "source": "/", "destination": "/snipe_jobs_sales_funnel.html" }
   ]
 }
