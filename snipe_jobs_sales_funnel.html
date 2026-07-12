@@ -864,7 +864,7 @@ img{max-width:100%;display:block}
    ============================================================ */
 var APP_URL = 'https://626gl1ch.github.io/JOB-FINDER-SAAS-WEB-APP/';
 var WORKER_API_URL = 'https://my-sniper-worker.daniellancce1.workers.dev/api';
-var OFFER_DEADLINE = new Date('2026-08-31T23:59:59');
+var OFFER_DEADLINE = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
 /* Small fixed toast for checkout errors — kept low-key since this only
    shows up when something goes wrong (network error, Stripe down, etc). */
