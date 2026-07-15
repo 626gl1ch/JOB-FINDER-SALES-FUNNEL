@@ -876,7 +876,14 @@ img{max-width:100%;display:block}
    ============================================================ */
 var APP_URL = 'https://626gl1ch.github.io/JOB-FINDER-SAAS-WEB-APP/';
 var WORKER_API_URL = 'https://my-sniper-worker.daniellancce1.workers.dev/api';
-var OFFER_DEADLINE = new Date(Date.now() + 24 * 60 * 60 * 1000);
+var OFFER_DEADLINE;
+var storedDeadline = localStorage.getItem('snipejob_funnel_deadline');
+if (storedDeadline && parseInt(storedDeadline) > Date.now()) {
+  OFFER_DEADLINE = new Date(parseInt(storedDeadline));
+} else {
+  OFFER_DEADLINE = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  localStorage.setItem('snipejob_funnel_deadline', OFFER_DEADLINE.getTime());
+}
 
 var selectedFunnelPaymentMethod = 'paystack';
 function selectFunnelPayment(method) {
