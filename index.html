@@ -754,7 +754,19 @@ img{max-width:100%;display:block}
         <div class="offer-feat"><i class="ti ti-check"></i>This rate, locked in, for as long as you stay subscribed</div>
       </div>
 
-      <div style="margin-top:24px; margin-bottom: 24px;">
+      <div style="margin-top:24px; margin-bottom: 16px;">
+        <label style="display:block; text-align:left; margin-bottom:8px; font-size:14px; color:var(--text-dim); font-weight:500;">Select payment method</label>
+        <div style="display:flex; gap:10px;">
+          <button id="funnel-method-paystack" type="button" onclick="selectFunnelPayment('paystack')" style="flex:1; padding:12px; border-radius:8px; border:2px solid var(--accent); background:rgba(255,59,48,0.1); color:#fff; font-weight:600; cursor:pointer;">
+            <i class="ti ti-credit-card"></i> Card / Bank
+          </button>
+          <button id="funnel-method-crypto" type="button" onclick="selectFunnelPayment('crypto')" style="flex:1; padding:12px; border-radius:8px; border:2px solid rgba(255,255,255,0.1); background:transparent; color:var(--text-dim); font-weight:600; cursor:pointer;">
+            <i class="ti ti-currency-bitcoin"></i> Crypto
+          </button>
+        </div>
+      </div>
+
+      <div style="margin-top:16px; margin-bottom: 24px;">
         <label for="checkoutEmail" style="display:block; text-align:left; margin-bottom:8px; font-size:14px; color:var(--text-dim); font-weight:500;">Enter your email to continue</label>
         <input type="email" id="checkoutEmail" placeholder="your@email.com" style="width:100%; padding:14px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:#fff; font-size:16px; outline:none; transition:border-color 0.2s; font-family:inherit;" onfocus="this.style.borderColor='var(--accent-glow)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
       </div>
@@ -866,6 +878,24 @@ var APP_URL = 'https://626gl1ch.github.io/JOB-FINDER-SAAS-WEB-APP/';
 var WORKER_API_URL = 'https://my-sniper-worker.daniellancce1.workers.dev/api';
 var OFFER_DEADLINE = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
+var selectedFunnelPaymentMethod = 'paystack';
+function selectFunnelPayment(method) {
+  selectedFunnelPaymentMethod = method;
+  var paystackBtn = document.getElementById('funnel-method-paystack');
+  var cryptoBtn = document.getElementById('funnel-method-crypto');
+  
+  if (paystackBtn) {
+    paystackBtn.style.border = method === 'paystack' ? '2px solid var(--accent)' : '2px solid rgba(255,255,255,0.1)';
+    paystackBtn.style.background = method === 'paystack' ? 'rgba(255,59,48,0.1)' : 'transparent';
+    paystackBtn.style.color = method === 'paystack' ? '#fff' : 'var(--text-dim)';
+  }
+  if (cryptoBtn) {
+    cryptoBtn.style.border = method === 'crypto' ? '2px solid var(--accent)' : '2px solid rgba(255,255,255,0.1)';
+    cryptoBtn.style.background = method === 'crypto' ? 'rgba(255,59,48,0.1)' : 'transparent';
+    cryptoBtn.style.color = method === 'crypto' ? '#fff' : 'var(--text-dim)';
+  }
+}
+
 /* Small fixed toast for checkout errors — kept low-key since this only
    shows up when something goes wrong (network error, Stripe down, etc). */
 function fnToast(msg){
@@ -908,7 +938,11 @@ function startFunnelCheckout(plan, btnEl){
     btnEl.innerHTML = '<i class="ti ti-loader-2" style="animation:spin 1s linear infinite"></i> Redirecting to secure checkout…';
   }
 
-  fetch(WORKER_API_URL + '/payment/create-checkout-public', {
+  var endpoint = selectedFunnelPaymentMethod === 'crypto' 
+    ? '/payment/crypto/create-checkout' 
+    : '/payment/create-checkout-public';
+
+  fetch(WORKER_API_URL + endpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ plan: plan, email: email, cancel_url: window.location.href })
