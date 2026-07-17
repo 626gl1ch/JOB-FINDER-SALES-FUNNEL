@@ -787,7 +787,7 @@ img{max-width:100%;display:block}
     </div>
 
     <div class="offer-trustline reveal">
-      <span><i class="ti ti-lock"></i> Stripe-secured checkout</span>
+      <span><i class="ti ti-lock"></i> Paystack-secured checkout</span>
       <span><i class="ti ti-toggle-left"></i> Cancel anytime, one click</span>
       <span><i class="ti ti-receipt"></i> Price locked while subscribed</span>
     </div>
@@ -905,7 +905,7 @@ function selectFunnelPayment(method) {
 }
 
 /* Small fixed toast for checkout errors — kept low-key since this only
-   shows up when something goes wrong (network error, Stripe down, etc). */
+   shows up when something goes wrong (network error, Paystack down, etc). */
 function fnToast(msg){
   var el = document.getElementById('fnToast');
   if (!el) {
